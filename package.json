@@ -1,0 +1,43 @@
+{
+  "name": "ems_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/bundle.js",
+    "serve": "cross-env NODE_ENV=development webpack  --mode=development  --watch",
+    "preDeploy": "webpack --mode=production"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.2.0",
+    "bcrypt": "^5.0.0",
+    "bcrypt-nodejs": "0.0.3",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.0",
+    "express": "^4.17.1",
+    "json-sql": "^0.4.11",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
+    "mongoose": "^5.8.11",
+    "mssql": "^6.0.1",
+    "tedious": "^8.0.1",
+    "webpack-cli": "^3.3.11"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/preset-env": "^7.10.2",
+    "babel-loader": "^8.0.6",
+    "colors": "^1.4.0",
+    "morgan": "^1.9.1",
+    "nodemon": "^2.0.2",
+    "nodemon-webpack-plugin": "^4.3.1",
+    "webpack": "^4.42.0",
+    "webpack-node-externals": "^1.7.2",
+    "webpack-plugin": "^1.0.5"
+  }
+}
