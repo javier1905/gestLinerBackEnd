@@ -29,7 +29,8 @@ servidor.use('/api/logueo',require('./rutasApi/Logueo'))
 // servidor.use('/api/authRouterReact/nivel5',require('./rutasApi/authAccesosReact/authNivel5RouterReact'))
 // servidor.use('/api/usuarios',require('./rutasApi/authAccesos/authAdminRouter'),require('./rutasApi/usuarios'))
 servidor.use('/api/usuarios',require('./rutasApi/usuarios'))
-servidor.use('/api/categorias' , require('./rutasApi/categorias') )
+servidor.use('/api/categorias' , require('./rutasApi/categorias'))
+servidor.use('/api/unidadesMedida' , require('./rutasApi/unidadesMedida'))
 servidor.use('/api/autentificasion',require('./rutasApi/Autentificasion'))
 //
 

@@ -373,3 +373,34 @@ set
 activo = 0
 where id = @idCategoria
 go
+create procedure pa_listaUnidadesMedia
+as
+select id as idUnidadMedida , nombre as nombreUnidadMedida , descripcion as descripcionUnidadMedida
+from unidades_medida
+where activo = 1
+go
+create procedure pa_insertUnidadMedida
+@nombreUnidadMedida varchar(50) ,
+@descripcionUnidadMedida varchar(50)
+as
+insert into unidades_medida( nombre , descripcion , activo ) values ( @nombreUnidadMedida , @descripcionUnidadMedida , 1 )
+go
+create procedure pa_updateUnidadMedida
+@idUnidadMedida int ,
+@nombreUnidadMedida varchar(50) ,
+@descripcionUnidadMedida varchar(50)
+as
+update unidades_medida
+set
+nombre = @nombreUnidadMedida ,
+descripcion = @descripcionUnidadMedida 
+where id = @idUnidadMedida
+go
+create procedure pa_deleteUnidadMedida
+@idUnidadMedida int
+as
+update unidades_medida
+set
+activo = 0
+where id = @idUnidadMedida
+go
