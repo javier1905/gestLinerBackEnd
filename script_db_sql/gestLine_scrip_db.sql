@@ -342,3 +342,34 @@ create procedure pa_login
 	from usuarios
 	where nombreUsuario = @usuario
 go
+create procedure pa_listaCategorias
+as
+select id as idCategoria , nombre as nombreCategoria , descripcion as descripcionCategoria
+from categorias
+where activo = 1
+go
+create procedure pa_insertCategoria
+@nombreCategoria varchar(50) ,
+@descripcionCategoria varchar(50)
+as
+insert into categorias ( nombre , descripcion , activo ) values ( @nombreCategoria , @descripcionCategoria , 1 )
+go
+create procedure pa_updateCategoria
+@idCategoria int ,
+@nombreCategoria varchar(50) ,
+@descripcionCategoria varchar(50)
+as
+update categorias
+set
+nombre = @nombreCategoria ,
+descripcion = @descripcionCategoria 
+where id = @idCategoria
+go
+create procedure pa_deleteCategoria
+@idCategoria int
+as
+update categorias
+set
+activo = 0
+where id = @idCategoria
+go

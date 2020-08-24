@@ -24,6 +24,7 @@ if(process.env.NODE_ENV === 'development'){
     //         min:0,
     //         idleTimeoutMillis:30000,
     //     }
+    //VJ7300
     // }
     URI = {
         user: 'gestLine_SQLLogin_1',
