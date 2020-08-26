@@ -404,3 +404,43 @@ set
 activo = 0
 where id = @idUnidadMedida
 go
+create procedure pa_listaDirecciones
+as
+select id as idDireccion , calle as calleDireccion , altura as alturaDireccion , cp as codigoPostalDireccion , barrio as barrioDireccion , otrosDatos as otrosDatosDireccion
+from direcciones
+where activo = 1
+go
+create procedure pa_insertDireccion
+@calleDireccion varchar(50) ,
+@alturaDireccion int ,
+@codigoPostalDireccion int ,
+@barrioDireccion varchar(50) ,
+@otrosDatosDireccion varchar(200)
+as
+insert into direcciones (calle , altura , cp , barrio , otrosDatos , activo) values (@calleDireccion , @alturaDireccion , @codigoPostalDireccion , @barrioDireccion , @otrosDatosDireccion , 1 )
+go
+create procedure pa_updateDireccion
+@idDireccion int ,
+@calleDireccion varchar(50) ,
+@alturaDireccion int ,
+@codigoPostalDireccion int ,
+@barrioDireccion varchar(50) ,
+@otrosDatosDireccion varchar(200)
+as
+update direcciones
+set
+calle = @calleDireccion ,
+altura = @alturaDireccion ,
+cp = @codigoPostalDireccion ,
+barrio = @barrioDireccion ,
+otrosDatos = @otrosDatosDireccion
+where id = @idDireccion
+go
+create procedure pa_deleteDireccion
+@idDireccion int
+as
+update direcciones
+set
+activo = 0
+where id = @idDireccion
+go

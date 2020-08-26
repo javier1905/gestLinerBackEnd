@@ -31,6 +31,7 @@ servidor.use('/api/logueo',require('./rutasApi/Logueo'))
 servidor.use('/api/usuarios',require('./rutasApi/usuarios'))
 servidor.use('/api/categorias' , require('./rutasApi/categorias'))
 servidor.use('/api/unidadesMedida' , require('./rutasApi/unidadesMedida'))
+servidor.use('/api/direcciones' , require('./rutasApi/direcciones'))
 servidor.use('/api/autentificasion',require('./rutasApi/Autentificasion'))
 //
 
