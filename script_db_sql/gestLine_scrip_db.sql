@@ -472,3 +472,37 @@ set
 activo = 0
 where id = @idMarca
 go
+create procedure pa_listaProductos
+as
+select id as idProducto , nombre as nombreProducto , descripcion as descripcionProducto , precioActual as precioActualProducto
+from productos
+where activo = 1
+go
+create procedure pa_insertProducto
+@nombreProducto varchar(50) ,
+@descripcionProducto varchar(200) ,
+@precioActualProducto real
+as
+insert into productos( nombre , descripcion , precioActual , activo ) values ( @nombreProducto , @descripcionProducto , @precioActualProducto , 1 )
+go
+create procedure pa_updateProducto
+@idProducto int ,
+@nombreProducto varchar(50) ,
+@descripcionProducto varchar(200) ,
+@precioActualProducto real
+as
+update productos
+set
+nombre = @nombreProducto ,
+descripcion = @descripcionProducto ,
+precioActual = @precioActualProducto
+where id = @idProducto
+go
+create procedure pa_deleteProducto
+@idProducto int
+as
+update productos
+set
+activo = 0
+where id = @idProducto
+go

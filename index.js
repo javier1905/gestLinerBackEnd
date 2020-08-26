@@ -33,6 +33,7 @@ servidor.use('/api/categorias' , require('./rutasApi/categorias'))
 servidor.use('/api/unidadesMedida' , require('./rutasApi/unidadesMedida'))
 servidor.use('/api/direcciones' , require('./rutasApi/direcciones'))
 servidor.use('/api/marcas' , require('./rutasApi/marcas'))
+servidor.use('/api/productos' , require('./rutasApi/productos'))
 servidor.use('/api/autentificasion',require('./rutasApi/Autentificasion'))
 //
 
