@@ -444,3 +444,31 @@ set
 activo = 0
 where id = @idDireccion
 go
+create procedure pa_listaMarcas
+as
+select id as idMarca , nombre as nombreMarca
+from marcas
+where activo = 1
+go
+create procedure pa_insertMarca
+@nombreMarca varchar(50)
+as
+insert into marcas( nombre , activo ) values ( @nombreMarca , 1 )
+go
+create procedure pa_updateMarca
+@idMarca int ,
+@nombreMarca varchar(50)
+as
+update marcas
+set
+nombre = @nombreMarca
+where id = @idMarca
+go
+create procedure pa_deleteMarca
+@idMarca int
+as
+update marcas
+set
+activo = 0
+where id = @idMarca
+go

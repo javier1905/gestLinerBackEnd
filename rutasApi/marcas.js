@@ -1,14 +1,14 @@
 const { Router } = require('express')
 const router = Router()
 
-//TODO: LISTA DE CATEGORIAS
+//TODO: LISTA DE MARCAS
 router.get('/list' , async ( req , res ) => {
     try{
         const {abrirConexionPOOL,cerrarConexionPOOL} = require('../conexiones/sqlServer')
         const {Request} = require('mssql')
-        const conexion = await abrirConexionPOOL('ListaCategorias')
+        const conexion = await abrirConexionPOOL('ListaMarcas')
         const myRequest = new Request (conexion)
-        const result = await myRequest.execute('pa_listaCategorias')
+        const result = await myRequest.execute('pa_listaMarcas')
         if(result) {
             cerrarConexionPOOL()
             res.status(200).json(result.recordset)
@@ -24,21 +24,20 @@ router.get('/list' , async ( req , res ) => {
     }
 })
 
-//TODO: INSERTA CATEGORA
+//TODO: INSERTA MARCA
 
 router.post ('/insert' , async (req , res) => {
     const { abrirConexionPOOL , cerrarConexionPOOL } = require('../conexiones/sqlServer')
     try {
-        const { nombreCategoria , descripcionCategoria } = req.body
-        const conexion = await abrirConexionPOOL('insertCategoria')
+        const {nombreMarca} = req.body
+        const conexion = await abrirConexionPOOL('insertMarca')
         const { Request , VarChar } = require('mssql')
         const myRequest = new Request (conexion)
-        myRequest.input('nombreCategoria' , VarChar , nombreCategoria )
-        myRequest.input('descripcionCategoria' , VarChar , descripcionCategoria )
-        const result = await myRequest.execute ('pa_insertCategoria')
+        myRequest.input('nombreMarca' , VarChar , nombreMarca )
+        const result = await myRequest.execute ('pa_insertMarca')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Categoria guardada exitosamente'})
+            res.status(200).json({ mensaje:'Marca guardada exitosamente'})
         }
         else{
             cerrarConexionPOOL()
@@ -51,22 +50,21 @@ router.post ('/insert' , async (req , res) => {
     }
 })
 
-//TODO: UPDATE CATEGORIA
+//TODO: UPDATE MARCA
 
 router.put('/update',async(req,res)=>{
     const { abrirConexionPOOL , cerrarConexionPOOL } = require('../conexiones/sqlServer')
     try {
-        const {nombreCategoria,descripcionCategoria,idCategoria} = req.body        
-        const conexion = await abrirConexionPOOL('updateCategoria')
+        const {nombreMarca,idMarca} = req.body        
+        const conexion = await abrirConexionPOOL('updateMarca')
         const mssql = require('mssql')
         const myRequest = new mssql.Request (conexion)
-        myRequest.input('nombreCategoria' , mssql.VarChar , nombreCategoria )
-        myRequest.input('descripcionCategoria' , mssql.VarChar , descripcionCategoria )
-        myRequest.input('idCategoria' , mssql.Int , idCategoria )
-        const result = await myRequest.execute ('pa_updateCategoria')
+        myRequest.input('nombreMarca' , mssql.VarChar , nombreMarca )
+        myRequest.input('idMarca' , mssql.Int , idMarca )
+        const result = await myRequest.execute ('pa_updateMarca')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Categoria modificada exitosamente'})
+            res.status(200).json({ mensaje:'Marca modificada exitosamente'})
         }
         else{
             cerrarConexionPOOL()
@@ -79,20 +77,20 @@ router.put('/update',async(req,res)=>{
     }
 })
 
-//TODO: DELETE CATEGORIA
+//TODO: DELETE MARCA
 
 router.post('/delete',async(req,res)=>{
     const { abrirConexionPOOL , cerrarConexionPOOL } = require('../conexiones/sqlServer')
     try {
-        const {idCategoria} = req.body        
-        const conexion = await abrirConexionPOOL('deleteCategoria')
+        const {idMarca} = req.body        
+        const conexion = await abrirConexionPOOL('deleteMarca')
         const mssql = require('mssql')
         const myRequest = new mssql.Request (conexion)
-        myRequest.input('idCategoria' , mssql.Int , idCategoria )
-        const result = await myRequest.execute ('pa_deleteCategoria')
+        myRequest.input('idMarca' , mssql.Int , idMarca )
+        const result = await myRequest.execute ('pa_deleteMarca')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Categoria eliminada exitosamente'})
+            res.status(200).json({ mensaje:'Marca eliminada exitosamente'})
         }
         else{
             cerrarConexionPOOL()
