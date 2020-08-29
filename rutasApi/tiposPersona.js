@@ -1,14 +1,14 @@
 const { Router } = require('express')
 const router = Router()
 
-//TODO: LISTA DE TIPOS DE DOCUMENTO
+//TODO: LISTA DE TIPOS DE PERSONA
 router.get('/list' , async ( req , res ) => {
     try{
         const {abrirConexionPOOL,cerrarConexionPOOL} = require('../conexiones/sqlServer')
         const {Request} = require('mssql')
-        const conexion = await abrirConexionPOOL('ListaTiposDocumento')
+        const conexion = await abrirConexionPOOL('ListaTiposPersona')
         const myRequest = new Request (conexion)
-        const result = await myRequest.execute('pa_listaTiposDocumento')
+        const result = await myRequest.execute('pa_listaTiposPersona')
         if(result) {
             cerrarConexionPOOL()
             res.status(200).json(result.recordset)
@@ -24,20 +24,20 @@ router.get('/list' , async ( req , res ) => {
     }
 })
 
-//TODO: INSERTA TIPO DE DOCUMENTO
+//TODO: INSERTA TIPO DE PERSONA
 
 router.post ('/insert' , async (req , res) => {
     const { abrirConexionPOOL , cerrarConexionPOOL } = require('../conexiones/sqlServer')
     try {
-        const {nombreTipoDocumento} = req.body
-        const conexion = await abrirConexionPOOL('insertTipoDocumento')
+        const {nombreTipoPersona} = req.body
+        const conexion = await abrirConexionPOOL('insertTipoPersona')
         const { Request , VarChar } = require('mssql')
         const myRequest = new Request (conexion)
-        myRequest.input('nombreTipoDocumento' , VarChar , nombreTipoDocumento )
-        const result = await myRequest.execute ('pa_insertTipoDocumento')
+        myRequest.input('nombreTipoPersona' , VarChar , nombreTipoPersona )
+        const result = await myRequest.execute ('pa_insertTipoPersona')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Tipo de documento guardado exitosamente'})
+            res.status(200).json({ mensaje:'Tipo de persona guardada exitosamente'})
         }
         else{
             cerrarConexionPOOL()
@@ -50,21 +50,21 @@ router.post ('/insert' , async (req , res) => {
     }
 })
 
-//TODO: UPDATE TIPO DE DOCUMENTO
+//TODO: UPDATE TIPO DE PERSONA
 
 router.put('/update',async(req,res)=>{
     const { abrirConexionPOOL , cerrarConexionPOOL } = require('../conexiones/sqlServer')
     try {
-        const {nombreTipoDocumento,idTipoDocumento} = req.body        
-        const conexion = await abrirConexionPOOL('updateTipoDocumento')
+        const {nombreTipoPersona,idTipoPersona} = req.body        
+        const conexion = await abrirConexionPOOL('updateTipoPersona')
         const mssql = require('mssql')
         const myRequest = new mssql.Request (conexion)
-        myRequest.input('nombreTipoDocumento' , mssql.VarChar , nombreTipoDocumento )
-        myRequest.input('idTipoDocumento' , mssql.Int , idTipoDocumento )
-        const result = await myRequest.execute ('pa_updateTipoDocumento')
+        myRequest.input('nombreTipoPersona' , mssql.VarChar , nombreTipoPersona )
+        myRequest.input('idTipoPersona' , mssql.Int , idTipoPersona )
+        const result = await myRequest.execute ('pa_updateTipoPersona')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Tipo de documento modificado exitosamente'})
+            res.status(200).json({ mensaje:'Tipo de persona modificada exitosamente'})
         }
         else{
             cerrarConexionPOOL()
@@ -77,20 +77,20 @@ router.put('/update',async(req,res)=>{
     }
 })
 
-//TODO: DELETE TIPO DE DOCUMENTO
+//TODO: DELETE TIPO DE PERSONA
 
 router.post('/delete',async(req,res)=>{
     const { abrirConexionPOOL , cerrarConexionPOOL } = require('../conexiones/sqlServer')
     try {
-        const {idTipoDocumento} = req.body        
-        const conexion = await abrirConexionPOOL('deleteTipoDocumento')
+        const {idTipoPersona} = req.body        
+        const conexion = await abrirConexionPOOL('deleteTipoPersona')
         const mssql = require('mssql')
         const myRequest = new mssql.Request (conexion)
-        myRequest.input('idTipoDocumento' , mssql.Int , idTipoDocumento )
-        const result = await myRequest.execute ('pa_deleteTipoDocumento')
+        myRequest.input('idTipoPersona' , mssql.Int , idTipoPersona )
+        const result = await myRequest.execute ('pa_deleteTipoPersona')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Tipo de documento eliminado exitosamente'})
+            res.status(200).json({ mensaje:'Tipo de persona eliminada exitosamente'})
         }
         else{
             cerrarConexionPOOL()
