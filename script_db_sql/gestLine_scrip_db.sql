@@ -506,3 +506,58 @@ set
 activo = 0
 where id = @idProducto
 go
+create procedure pa_listaArticulos
+as
+select a.id as idArticulo, a.nombre as nombreArticulo , a.descripcion as descripcionArticulo , a.peso as pesoArticulo , a.codProvedor as codigoProvedorArticulo ,
+a.codInterno as codigoInternoAticulo , u.id as idUnidadMedida , u.nombre as nombreUnidadMedida , c.id as idCategoria , c.nombre as nombreCategoria ,
+m.id as idMarca , m.nombre as nombreMatca
+from articulos a
+join unidades_medida u on u.id = a.idUnidadMedida
+join categorias c on c.id = a.idCategoria
+join marcas m on m.id = a.idMarca
+where a.activo = 1
+go
+create procedure pa_insertArticulo
+@nombreArticulo varchar(50) ,
+@descripcionArticulo varchar(200) ,
+@pesoArticulo real ,
+@codProvedorArticulo int ,
+@codInternoArticulo int ,
+@idUnidadMedida int ,
+@idCategoria int ,
+@idMarca int 
+as
+insert into articulos (nombre , descripcion , peso , codProvedor , codInterno , idUnidadMedida , idCategoria , idMarca , activo ) values
+( @nombreArticulo , @descripcionArticulo , @pesoArticulo , @codProvedorArticulo , @codInternoArticulo , @idUnidadMedida , @idCategoria , @idMarca  , 1 )
+go
+create procedure pa_updateArticulo
+@idArticulo int ,
+@nombreArticulo varchar(50) ,
+@descripcionArticulo varchar(200) ,
+@pesoArticulo real ,
+@codProvedorArticulo int ,
+@codInternoArticulo int ,
+@idUnidadMedida int ,
+@idCategoria int ,
+@idMarca int 
+as
+update articulos
+set
+nombre = @nombreArticulo ,
+descripcion = @descripcionArticulo ,
+peso = @pesoArticulo ,
+codProvedor = @codProvedorArticulo ,
+codInterno = @codInternoArticulo ,
+idUnidadMedida = @idUnidadMedida ,
+idCategoria = @idCategoria , 
+idMarca = @idMarca
+where id = @idArticulo
+go
+create procedure pa_deleteArticulo
+@idArticulo int
+as
+update articulos
+set
+activo = 0
+where id = @idArticulo
+go
