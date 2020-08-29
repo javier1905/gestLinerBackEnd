@@ -561,3 +561,31 @@ set
 activo = 0
 where id = @idArticulo
 go
+create procedure pa_listaTiposDocumento
+as
+select id as idTipoDocumento , nombre as nombreTipoDocumento
+from tipos_documento
+where activo = 1
+go
+create procedure pa_insertTipoDocumento
+@nombreTipoDocumento varchar(50)
+as
+insert into tipos_documento( nombre , activo ) values ( @nombreTipoDocumento , 1 )
+go
+create procedure pa_updateTipoDocumento
+@idTipoDocumento int ,
+@nombreTipoDocumento varchar(50)
+as
+update tipos_documento
+set
+nombre = @nombreTipoDocumento
+where id = @idTipoDocumento
+go
+create procedure pa_deleteTipoDocumento
+@idTipoDocumento int
+as
+update tipos_documento
+set
+activo = 0
+where id = @idTipoDocumento
+go
