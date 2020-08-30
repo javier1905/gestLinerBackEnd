@@ -617,3 +617,90 @@ set
 activo = 0
 where id = @idTipoPersona
 go
+create procedure pa_listaTiposContribullente
+as
+select id as idTipoContribullente , nombre as nombreTipoContribullente , descripcion as descripcionTipoContribullente
+from tipos_contribullente
+where activo = 1
+go
+create procedure pa_insertTipoContribullente
+@nombreTipoContribullente varchar(50) ,
+@descripcionTipoContribullente varchar(50)
+as
+insert into tipos_contribullente( nombre , descripcion , activo ) values ( @nombreTipoContribullente , @descripcionTipoContribullente , 1 )
+go
+create procedure pa_updateTipoContribullente
+@idTipoContribullente int ,
+@nombreTipoContribullente varchar(50) ,
+@descripcionTipoContribullente varchar(50)
+as
+update tipos_contribullente
+set
+nombre = @nombreTipoContribullente ,
+descripcion = @descripcionTipoContribullente 
+where id = @idTipoContribullente
+go
+create procedure pa_deleteTipoContribullente
+@idTipoContribullente int
+as
+update tipos_contribullente
+set
+activo = 0
+where id = @idTipoContribullente
+go
+create procedure pa_listaClientes
+as
+select c.id as idCliente , c.nombre as nombreCliente , c.apellido as apellidoCliente , td.id as idTipoDocumento , td.nombre as nombreTipoDocumento , c.nroDoc as nroDocCliente ,
+tc.id as idTipoContribullente , tc.nombre as nombreTipoContribullente , c.nroCuitCuil as nrosCuitCuilCliente , d.id as idDireccion , d.calle as calleDireccion , d.altura as alturaDireccion ,
+d.barrio as barrioDireccion , d.cp as cpDireccion , d.otrosDatos as otrosDatosDireccion , tp.id as idTipoPersona , tp.nombre as nombreTipoPersona
+from clientes c
+join tipos_documento td on td.id = c.idTipoDocumento
+join tipos_contribullente tc on tc.id = c.idTipoContribullente
+join direcciones d on d.id = c.idDireccion
+join tipos_persona tp on tp.id = c.idTipoPersona
+where c.activo = 1
+go
+create procedure pa_insertCliente
+@nombreCliente varchar(50) ,
+@apellidoCliente varchar(50) ,
+@idTipoDocumento int ,
+@nroDoc varchar(50) ,
+@idTipoContribullente int ,
+@nroCuitCuil int ,
+@idDireccion int ,
+@idTipoPersona int
+as
+insert into clientes( nombre , apellido , idTipoDocumento , nroDoc , idTipoContribullente , nroCuitCuil , idDireccion , idTipoPersona , activo )
+values ( @nombreCliente , @apellidoCliente , @idTipoDocumento ,@nroDoc , @idTipoContribullente , @nroCuitCuil , @idDireccion , @idTipoPersona  , 1 )
+go
+create procedure pa_updateCliente
+@idCliente int ,
+@nombreCliente varchar(50) ,
+@apellidoCliente varchar(50) ,
+@idTipoDocumento int ,
+@nroDoc varchar(50) ,
+@idTipoContribullente int ,
+@nroCuitCuil int ,
+@idDireccion int ,
+@idTipoPersona int
+as
+update clientes
+set
+nombre = @nombreCliente ,
+apellido = @apellidoCliente ,
+idTipoDocumento = @idTipoDocumento ,
+nroDoc = @nroDoc ,
+idTipoContribullente = @idTipoContribullente ,
+nroCuitCuil = @nroCuitCuil ,
+idDireccion = @idDireccion ,
+idTipoPersona = @idTipoPersona
+where id = @idCliente
+go
+create procedure pa_deleteCliente
+@idCliente int
+as
+update clientes
+set
+activo = 0
+where id = @idCliente
+go
