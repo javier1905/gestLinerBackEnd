@@ -39,6 +39,7 @@ servidor.use('/api/tiposDocumento' , require('./rutasApi/tiposDocumento'))
 servidor.use('/api/tiposPersona' , require('./rutasApi/tiposPersona'))
 servidor.use('/api/tiposContribullente' , require('./rutasApi/tiposContribullente'))
 servidor.use('/api/clientes' , require('./rutasApi/clientes'))
+servidor.use('/api/sucursales' , require('./rutasApi/sucursales'))
 servidor.use('/api/autentificasion',require('./rutasApi/Autentificasion'))
 //
 

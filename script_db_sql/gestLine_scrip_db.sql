@@ -704,3 +704,36 @@ set
 activo = 0
 where id = @idCliente
 go
+create procedure pa_listaSucursales
+as
+select s.id as idSucursal , s.nombre as nombreSucursal , d.id as idDireccion , d.calle as calleDireccion , d.altura as alturaDireccion ,
+d.barrio as barrioDireccion , d.cp as cpDireccion , d.otrosDatos as otrosDatosDireccion
+from sucursales s
+join direcciones d on d.id = s.idDireccion
+where s.activo = 1
+go
+create procedure pa_insertSucursal
+@idDireccion int ,
+@nombreSucursal varchar(50)
+as
+insert into sucursales( idDireccion , nombre , activo ) values ( @idDireccion , @nombreSucursal , 1 )
+go
+create procedure pa_updateSucursal
+@idSucursal int ,
+@idDireccion int ,
+@nombreSucursal varchar(50)
+as
+update sucursales
+set
+nombre = @nombreSucursal ,
+idDireccion = @idDireccion 
+where id = @idSucursal
+go
+create procedure pa_deleteSucursal
+@idSucursal int
+as
+update sucursales
+set
+activo = 0
+where id = @idSucursal
+go
