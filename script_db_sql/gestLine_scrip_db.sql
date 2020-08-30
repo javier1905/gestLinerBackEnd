@@ -136,7 +136,7 @@ create table clientes
 	constraint fk_clientes_tiposPersona foreign key (idTipoPersona) references tipos_persona (id)
 )
 go
-create table provedores
+create table proveedores
 (
 	id int identity ( 1,1 ) ,
 	nombre varchar(50) not null ,
@@ -148,11 +148,11 @@ create table provedores
 	idDireccion int not null ,
 	idTipoPersona int not null,
 	activo bit ,
-	constraint pk_provedores primary key (id) ,	
-	constraint fk_provedores_tiposDocumento foreign key (idTipoDocumento) references tipos_documento (id) ,
-	constraint fk_provedores_tiposContribullente foreign key (idTipoContribullente) references tipos_contribullente (id) ,
-	constraint fk_provedores_direcciones foreign key (idDireccion) references direcciones (id) ,
-	constraint fk_provedores_tiposPersona foreign key (idTipoPersona) references tipos_persona (id)
+	constraint pk_proveedores primary key (id) ,	
+	constraint fk_proveedores_tiposDocumento foreign key (idTipoDocumento) references tipos_documento (id) ,
+	constraint fk_proveedores_tiposContribullente foreign key (idTipoContribullente) references tipos_contribullente (id) ,
+	constraint fk_proveedores_direcciones foreign key (idDireccion) references direcciones (id) ,
+	constraint fk_proveedores_tiposPersona foreign key (idTipoPersona) references tipos_persona (id)
 )
 go
 create table usuarios
@@ -172,13 +172,13 @@ create table compras
 	nroComprobante int ,
 	fechaCompra date not null,
 	fechaCarga date not null,
-	idProvedor int not null ,
+	idProveedor int not null ,
 	idUsuario int not null ,
 	idSucursal int not null ,
 	total real not null,
 	activo bit ,
 	constraint pk_compras primary key (id) ,
-	constraint fk_compras_provedores foreign key (idProvedor) references provedores (id) ,
+	constraint fk_compras_proveedores foreign key (idProveedor) references proveedores (id) ,
 	constraint fk_compras_usuarios foreign key (idUsuario) references usuarios (id) ,
 	constraint fk_compras_sucursales foreign key (idSucursal) references sucursales (id)
 )
@@ -664,23 +664,23 @@ create procedure pa_insertCliente
 @nombreCliente varchar(50) ,
 @apellidoCliente varchar(50) ,
 @idTipoDocumento int ,
-@nroDoc varchar(50) ,
+@nroDocCliente varchar(50) ,
 @idTipoContribullente int ,
-@nroCuitCuil int ,
+@nroCuitCuilCliente int ,
 @idDireccion int ,
 @idTipoPersona int
 as
 insert into clientes( nombre , apellido , idTipoDocumento , nroDoc , idTipoContribullente , nroCuitCuil , idDireccion , idTipoPersona , activo )
-values ( @nombreCliente , @apellidoCliente , @idTipoDocumento ,@nroDoc , @idTipoContribullente , @nroCuitCuil , @idDireccion , @idTipoPersona  , 1 )
+values ( @nombreCliente , @apellidoCliente , @idTipoDocumento ,@nroDocCliente , @idTipoContribullente , @nroCuitCuilCliente , @idDireccion , @idTipoPersona  , 1 )
 go
 create procedure pa_updateCliente
 @idCliente int ,
 @nombreCliente varchar(50) ,
 @apellidoCliente varchar(50) ,
 @idTipoDocumento int ,
-@nroDoc varchar(50) ,
+@nroDocCliente varchar(50) ,
 @idTipoContribullente int ,
-@nroCuitCuil int ,
+@nroCuitCuilCliente int ,
 @idDireccion int ,
 @idTipoPersona int
 as
@@ -689,9 +689,9 @@ set
 nombre = @nombreCliente ,
 apellido = @apellidoCliente ,
 idTipoDocumento = @idTipoDocumento ,
-nroDoc = @nroDoc ,
+nroDoc = @nroDocCliente ,
 idTipoContribullente = @idTipoContribullente ,
-nroCuitCuil = @nroCuitCuil ,
+nroCuitCuil = @nroCuitCuilCliente ,
 idDireccion = @idDireccion ,
 idTipoPersona = @idTipoPersona
 where id = @idCliente
@@ -736,4 +736,60 @@ update sucursales
 set
 activo = 0
 where id = @idSucursal
+go
+create procedure pa_listaProveedores
+as
+select p.id as idProveedor , p.nombre as nombreProveedor , p.apellido as apellidoProveedor , td.id as idTipoDocumento , td.nombre as nombreTipoDocumento , p.nroDoc as nroDocProveedor ,
+tc.id as idTipoContribullente , tc.nombre as nombreTipoContribullente , p.nroCuitCuil as nrosCuitCuilProveedor , d.id as idDireccion , d.calle as calleDireccion , d.altura as alturaDireccion ,
+d.barrio as barrioDireccion , d.cp as cpDireccion , d.otrosDatos as otrosDatosDireccion , tp.id as idTipoPersona , tp.nombre as nombreTipoPersona
+from proveedores p
+join tipos_documento td on td.id = p.idTipoDocumento
+join tipos_contribullente tc on tc.id = p.idTipoContribullente
+join direcciones d on d.id = p.idDireccion
+join tipos_persona tp on tp.id = p.idTipoPersona
+where p.activo = 1
+go
+create procedure pa_insertProveedor
+@nombreProveedor varchar(50) ,
+@apellidoProveedor varchar(50) ,
+@idTipoDocumento int ,
+@nroDocProveedor varchar(50) ,
+@idTipoContribullente int ,
+@nroCuitCuilProveedor int ,
+@idDireccion int ,
+@idTipoPersona int
+as
+insert into proveedores( nombre , apellido , idTipoDocumento , nroDoc , idTipoContribullente , nroCuitCuil , idDireccion , idTipoPersona , activo )
+values ( @nombreProveedor , @apellidoProveedor , @idTipoDocumento ,@nroDocProveedor , @idTipoContribullente , @nroCuitCuilProveedor , @idDireccion , @idTipoPersona  , 1 )
+go
+create procedure pa_updateProveedor
+@idProveedor int ,
+@nombreProveedor varchar(50) ,
+@apellidoProveedor varchar(50) ,
+@idTipoDocumento int ,
+@nroDocProveedor varchar(50) ,
+@idTipoContribullente int ,
+@nroCuitCuilProveedor int ,
+@idDireccion int ,
+@idTipoPersona int
+as
+update proveedores
+set
+nombre = @nombreProveedor ,
+apellido = @apellidoProveedor ,
+idTipoDocumento = @idTipoDocumento ,
+nroDoc = @nroDocProveedor ,
+idTipoContribullente = @idTipoContribullente ,
+nroCuitCuil = @nroCuitCuilProveedor ,
+idDireccion = @idDireccion ,
+idTipoPersona = @idTipoPersona
+where id = @idProveedor
+go
+create procedure pa_deleteProveedor
+@idProveedor int
+as
+update proveedores
+set
+activo = 0
+where id = @idProveedor
 go
