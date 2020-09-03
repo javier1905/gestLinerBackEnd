@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { eachSeries , setImmediate } = require('async')
+const { eachSeries } = require('async')
 const router = Router()
 
 //TODO: LISTA DE PRODUCTOS
@@ -29,71 +29,59 @@ router.get('/list' , async ( req , res ) => {
 
 router.post ('/insert' , async (req , res) => {
     const { abrirConexionPOOL , cerrarConexionPOOL } = require('../conexiones/sqlServer')
-    try {
-        const { nombreProducto , descripcionProducto , precioActualProducto, vecDetallesProducto } = req.body
-        const conexion = await abrirConexionPOOL('insertProducto')
-        const { Request , VarChar , Int , Real ,Transaction } = require('mssql')
-        const myTransaction = new Transaction (conexion)
-        myTransaction.begin( err => {
-            if(err) {
-                myTransaction.rollback()
-                cerrarConexionPOOL()
-                res.status(403).json({mensaje:'Error al inesperado'})
-            }
+    const {nombreProducto,descripcionProducto,precioActualProducto,vecDetallesProducto} = req.body
+    const conexion = await abrirConexionPOOL('insertProducto')
+    const { Request , VarChar , Int , Real ,Transaction } = require('mssql')
+    const myTransaction = new Transaction (conexion)
+    myTransaction.begin( async (err) => {
+        if(err) {
+            myTransaction.rollback()
+            cerrarConexionPOOL()
+            res.status(403).json({mensaje:err.message})
+        }
+        try {
             const myRequest = new Request (myTransaction)
             myRequest.input('nombreProducto' , VarChar , nombreProducto )
             myRequest.input('descripcionProducto' , VarChar , descripcionProducto )
             myRequest.input('precioActualProducto' , Real , precioActualProducto )
-            const result = await myRequest.execute ('pa_insertProducto')
-            if(result) {
-                // cerrarConexionPOOL()
-                // res.status(200).json({ mensaje:'Producto guardada exitosamente'})
-                if(result.recordset.rowsafected === 0){
-                    myTransaction.rollback()
-                    cerrarConexionPOOL()
-                    res.status(403).json({mensaje:'Error al inesperado'})
-                }
-                else{
-                    if(!result.recordset.idProducto){
-                        myTransaction.rollback()
-                        cerrarConexionPOOL()
-                        res.status(403).json({mensaje:'Error al inesperado'})
-                    }else {
-                        const idProducto = parseInt(result.recordset.idProducto)
-                        eachSeries(vecDetallesProducto , (DP , callback )=>{
-                            const myRequestDP = new Request (myTransaction)
-                            myRequestDP.input('idProducto' , Int , idProducto )
-                            myRequestDP.input('idArticulo' , Int , DP.idArticulo )
-                            myRequestDP.input('cantidadDetalleProducto' , Real , DP.cantidadDetalleProducto )
-                            myRequestDP.execute('pa_insertDetalleProducto', error=>{
-                                if(error){
-                                    callback(error)
-                                }
-                            })   
-                        },
-                        errorCallBack => {
-                            if(errorCallBack){
-                                myTransaction.rollback()
-                                cerrarConexionPOOL()
-                                res.status(403).json({mensaje:'Error al inesperado'})
-                            }
-                        })
-                    }
-                }                
-            }
-            else{  
+            const result = await myRequest.execute ('pa_insertProductoo')
+            if(result.rowsAffected[0] === 0 || !result.recordset[0].idProducto){
                 myTransaction.rollback()
                 cerrarConexionPOOL()
-                res.status(403).json({mensaje:'Error al inesperado'})
+                res.status(403).json({mensaje:'Producto no insertado'})
             }
-        })
-
-
-    }
-    catch(e){
-        cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
-    }
+            else{                
+                const idProducto = parseInt(result.recordset[0].idProducto)
+                const myRequestDP = new Request (myTransaction)
+                myRequestDP.input('idProducto' , Int , idProducto )
+                myRequestDP.input('idArticulo' , Int , 0 )
+                myRequestDP.input('cantidadDetalleProducto' , Real , 0 )
+                eachSeries(vecDetallesProducto , (DP , callback )=>{  
+                    myRequestDP.parameters.idArticulo.value = DP.idArticulo
+                    myRequestDP.parameters.cantidadDetalleProducto.value = DP.cantidadDetalleProducto                
+                    myRequestDP.execute('pa_insertDetalleProducto',(E,R)=>{if(E){ callback(E) }else{ callback()}}) 
+                    },
+                    errorCallBack => {
+                        if(errorCallBack){
+                            myTransaction.rollback()
+                            cerrarConexionPOOL()
+                            res.status(403).json({mensaje:errorCallBack})
+                        }
+                        else{
+                            myTransaction.commit()
+                            cerrarConexionPOOL()
+                            res.status(200).json({mensaje:'Producto y detalles de producto guardados exitosamente'})
+                        }
+                    }
+                )                
+            }
+        }
+        catch(e){
+            myTransaction.rollback()
+            cerrarConexionPOOL()
+            res.status(403).json({mensaje:e.message})
+        }                
+    })
 })
 
 //TODO: UPDATE PRODUCTO
