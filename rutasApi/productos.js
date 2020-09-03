@@ -1,4 +1,5 @@
 const { Router } = require('express')
+const { eachSeries , setImmediate } = require('async')
 const router = Router()
 
 //TODO: LISTA DE PRODUCTOS
@@ -29,22 +30,65 @@ router.get('/list' , async ( req , res ) => {
 router.post ('/insert' , async (req , res) => {
     const { abrirConexionPOOL , cerrarConexionPOOL } = require('../conexiones/sqlServer')
     try {
-        const { nombreProducto , descripcionProducto , precioActualProducto } = req.body
+        const { nombreProducto , descripcionProducto , precioActualProducto, vecDetallesProducto } = req.body
         const conexion = await abrirConexionPOOL('insertProducto')
-        const { Request , VarChar , Real } = require('mssql')
-        const myRequest = new Request (conexion)
-        myRequest.input('nombreProducto' , VarChar , nombreProducto )
-        myRequest.input('descripcionProducto' , VarChar , descripcionProducto )
-        myRequest.input('precioActualProducto' , Real , precioActualProducto )
-        const result = await myRequest.execute ('pa_insertProducto')
-        if(result) {
-            cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Producto guardada exitosamente'})
-        }
-        else{
-            cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
-        }
+        const { Request , VarChar , Int , Real ,Transaction } = require('mssql')
+        const myTransaction = new Transaction (conexion)
+        myTransaction.begin( err => {
+            if(err) {
+                myTransaction.rollback()
+                cerrarConexionPOOL()
+                res.status(403).json({mensaje:'Error al inesperado'})
+            }
+            const myRequest = new Request (myTransaction)
+            myRequest.input('nombreProducto' , VarChar , nombreProducto )
+            myRequest.input('descripcionProducto' , VarChar , descripcionProducto )
+            myRequest.input('precioActualProducto' , Real , precioActualProducto )
+            const result = await myRequest.execute ('pa_insertProducto')
+            if(result) {
+                // cerrarConexionPOOL()
+                // res.status(200).json({ mensaje:'Producto guardada exitosamente'})
+                if(result.recordset.rowsafected === 0){
+                    myTransaction.rollback()
+                    cerrarConexionPOOL()
+                    res.status(403).json({mensaje:'Error al inesperado'})
+                }
+                else{
+                    if(!result.recordset.idProducto){
+                        myTransaction.rollback()
+                        cerrarConexionPOOL()
+                        res.status(403).json({mensaje:'Error al inesperado'})
+                    }else {
+                        const idProducto = parseInt(result.recordset.idProducto)
+                        eachSeries(vecDetallesProducto , (DP , callback )=>{
+                            const myRequestDP = new Request (myTransaction)
+                            myRequestDP.input('idProducto' , Int , idProducto )
+                            myRequestDP.input('idArticulo' , Int , DP.idArticulo )
+                            myRequestDP.input('cantidadDetalleProducto' , Real , DP.cantidadDetalleProducto )
+                            myRequestDP.execute('pa_insertDetalleProducto', error=>{
+                                if(error){
+                                    callback(error)
+                                }
+                            })   
+                        },
+                        errorCallBack => {
+                            if(errorCallBack){
+                                myTransaction.rollback()
+                                cerrarConexionPOOL()
+                                res.status(403).json({mensaje:'Error al inesperado'})
+                            }
+                        })
+                    }
+                }                
+            }
+            else{  
+                myTransaction.rollback()
+                cerrarConexionPOOL()
+                res.status(403).json({mensaje:'Error al inesperado'})
+            }
+        })
+
+
     }
     catch(e){
         cerrarConexionPOOL()

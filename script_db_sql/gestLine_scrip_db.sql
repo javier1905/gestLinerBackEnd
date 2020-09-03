@@ -484,6 +484,7 @@ create procedure pa_insertProducto
 @precioActualProducto real
 as
 insert into productos( nombre , descripcion , precioActual , activo ) values ( @nombreProducto , @descripcionProducto , @precioActualProducto , 1 )
+select @@identity as idProducto
 go
 create procedure pa_updateProducto
 @idProducto int ,
@@ -505,6 +506,10 @@ update productos
 set
 activo = 0
 where id = @idProducto
+update detalles_producto
+set
+activo = 0
+where idProducto = @idProducto
 go
 create procedure pa_listaArticulos
 as
@@ -792,4 +797,24 @@ update proveedores
 set
 activo = 0
 where id = @idProveedor
+go
+create procedure pa_insertDetalleProducto
+@idProducto int ,
+@idArticulo int ,
+@cantidadDetalleProducto real
+as
+insert into detalles_producto (idProducto ,idArticulo , cantidad , activo ) values ( @idProducto , @idArticulo , @cantidadDetalleProducto , 1 )
+go
+create procedure pa_deleteDetalleProductoXidProducto
+@idProducto int
+as
+update detalles_producto
+set
+activo = 0
+where idProducto = @idProducto
+go
+create procedure pa_deleteDetalleProductoXidProductoDEF
+@idProducto int
+as
+delete detalles_producto where idProducto = @idProducto
 go
