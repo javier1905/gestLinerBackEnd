@@ -492,13 +492,22 @@ create procedure pa_updateProducto
 @descripcionProducto varchar(200) ,
 @precioActualProducto real
 as
-update productos
-set
-nombre = @nombreProducto ,
-descripcion = @descripcionProducto ,
-precioActual = @precioActualProducto
-where id = @idProducto
-delete detalles_producto where idProducto = @idProducto
+begin
+	begin try
+		begin transaction
+			update productos
+			set
+			nombre = @nombreProducto ,
+			descripcion = @descripcionProducto ,
+			precioActual = @precioActualProducto
+			where id = @idProducto
+			delete detalles_producto where idProducto = @idProducto
+		commit transaction
+	end try
+	begin catch
+		rollback transaction
+	end catch
+end
 go
 create procedure pa_deleteProducto
 @idProducto int
