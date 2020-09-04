@@ -498,6 +498,7 @@ nombre = @nombreProducto ,
 descripcion = @descripcionProducto ,
 precioActual = @precioActualProducto
 where id = @idProducto
+delete detalles_producto where idProducto = @idProducto
 go
 create procedure pa_deleteProducto
 @idProducto int
