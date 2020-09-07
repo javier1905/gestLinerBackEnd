@@ -15,7 +15,7 @@ servidor.use(cors())
 
 servidor.use(express.json())
 servidor.use(express.urlencoded({extended: true}))
-// servidor.use(require('./rutasApi/authAccesos/authAllRouter'))
+servidor.use(require('./rutasApi/checkLogin'))
 
 
 if(process.env.NODE_ENV === 'development' ) {  servidor.use(morgan('dev')) }
@@ -41,7 +41,7 @@ servidor.use('/api/tiposContribullente' , require('./rutasApi/tiposContribullent
 servidor.use('/api/clientes' , require('./rutasApi/clientes'))
 servidor.use('/api/sucursales' , require('./rutasApi/sucursales'))
 servidor.use('/api/proveedores' , require('./rutasApi/proveedores'))
-servidor.use('/api/autentificasion',require('./rutasApi/Autentificasion'))
+servidor.use('/api/getuserlogin',require('./rutasApi/getUserLogin'))
 //
 
 //Settings

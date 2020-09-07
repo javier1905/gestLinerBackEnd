@@ -11,16 +11,16 @@ router.get('/list' , async ( req , res ) => {
         const result = await myRequest.execute('pa_listaDirecciones')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json(result.recordset)
+            res.status(200).json({list:result.recordset,opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje : 'Error en el resultado'})
+            res.status(200).json({mensaje : 'Error en el resultado',opOK:false})
         }
     }
     catch (e) {
         cerrarConexionPOOL()
-        res.status(403).json({mensaje : e.message})
+        res.status(200).json({mensaje : e.message,opOK:false})
     }
 })
 
@@ -47,16 +47,16 @@ router.post ('/insert' , async (req , res) => {
         const result = await myRequest.execute ('pa_insertDireccion')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Direccion guardada exitosamente'})
+            res.status(200).json({ mensaje:'Direccion guardada exitosamente',opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
+            res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
+        res.status(403).json({mensaje:e.message,opOK:false})
     }
 })
 
@@ -85,16 +85,16 @@ router.put('/update',async(req,res)=>{
         const result = await myRequest.execute ('pa_updateDireccion')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Direccion modificada exitosamente'})
+            res.status(200).json({ mensaje:'Direccion modificada exitosamente',opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
+            res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
+        res.status(200).json({mensaje:e.message,opOK:false})
     }
 })
 
@@ -111,16 +111,16 @@ router.post('/delete',async(req,res)=>{
         const result = await myRequest.execute ('pa_deleteDireccion')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Direccion eliminada exitosamente'})
+            res.status(200).json({ mensaje:'Direccion eliminada exitosamente',opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
+            res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
+        res.status(200).json({mensaje:e.message,opOK:false})
     }
 })
 

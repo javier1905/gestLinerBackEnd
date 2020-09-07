@@ -11,16 +11,16 @@ router.get('/list' , async ( req , res ) => {
         const result = await myRequest.execute('pa_listaProveedores')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json(result.recordset)
+            res.status(200).json({list:result.recordset,opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje : 'Error en el resultado'})
+            res.status(200).json({mensaje : 'Error en el resultado',opOK:false})
         }
     }
     catch (e) {
         cerrarConexionPOOL()
-        res.status(403).json({mensaje : e.message})
+        res.status(200).json({mensaje : e.message,opOK:false})
     }
 })
 
@@ -46,16 +46,16 @@ router.post ('/insert' , async (req , res) => {
         const result = await myRequest.execute ('pa_insertProveedor')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Proveedor guardado exitosamente'})
+            res.status(200).json({ mensaje:'Proveedor guardado exitosamente',opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
+            res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
+        res.status(200).json({mensaje:e.message,opOK:false})
     }
 })
 
@@ -82,16 +82,16 @@ router.put('/update',async(req,res)=>{
         const result = await myRequest.execute ('pa_updateProveedor')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Proveedor modificado exitosamente'})
+            res.status(200).json({ mensaje:'Proveedor modificado exitosamente',opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
+            res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
+        res.status(200).json({mensaje:e.message,opOK:false})
     }
 })
 
@@ -108,16 +108,16 @@ router.post('/delete',async(req,res)=>{
         const result = await myRequest.execute ('pa_deleteProveedor')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Proveedor eliminado exitosamente'})
+            res.status(200).json({ mensaje:'Proveedor eliminado exitosamente',opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
+            res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
+        res.status(200).json({mensaje:e.message,opOK:false})
     }
 })
 

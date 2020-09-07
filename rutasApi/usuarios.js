@@ -3,7 +3,7 @@ const bcryp = require('bcrypt')
 
 const router = Router()
 
-// ! insertar usuario
+// TODO: INSERT USUARIO
 
 router.post ( '/insert' , async (req, res ) => {
     const {abrirConexionPOOL , cerrarConexionPOOL} = require ('../conexiones/sqlServer')
@@ -19,12 +19,12 @@ router.post ( '/insert' , async (req, res ) => {
         const result = await myRequest.execute( 'pa_insertUsuario' )
         if ( result ) {
             cerrarConexionPOOL()
-            res.status(200).json( { mensaje : 'Usuario insertado correctamente ' })
+            res.status(200).json( { mensaje : 'Usuario insertado correctamente',opOK:true })
         }
     }
     catch (e) {
         cerrarConexionPOOL()
-        res.status(403).json ( { mensaje : e.message } )
+        res.status(200).json ( { mensaje : e.message ,opOK:false} )
     }
 } )
 
@@ -43,12 +43,12 @@ router.post ( '/insert' , async (req, res ) => {
 //         }
 //         else{
 //             cerrarConexionPOOL()
-//             res.status(404).json({status: 403,mensaje:e.message})
+//             res.status(404).json({status: 200,mensaje:e.message})
 //         }
 //     }
 //     catch(e){
 //         cerrarConexionPOOL()
-//         res.status(404).json({status: 403,mensaje:e.message})
+//         res.status(404).json({status: 200,mensaje:e.message})
 //     }
 // })
 // //! lista de perfiles
@@ -65,12 +65,12 @@ router.post ( '/insert' , async (req, res ) => {
 //         }
 //         else{
 //             cerrarConexionPOOL()
-//             res.status(404).json({status: 403,mensaje:e.message})
+//             res.status(404).json({status: 200,mensaje:e.message})
 //         }
 //     }
 //     catch(e){
 //         cerrarConexionPOOL()
-//         res.status(404).json({status: 403,mensaje:e.message})
+//         res.status(404).json({status: 200,mensaje:e.message})
 //     }
 // })
 // //! consulta usuario por id
@@ -100,12 +100,12 @@ router.post ( '/insert' , async (req, res ) => {
 //         }
 //         else{
 //             cerrarConexionPOOL()
-//             res.status(404).json({status: 403,mensaje:e.message})
+//             res.status(404).json({status: 200,mensaje:e.message})
 //         }
 //     }
 //     catch(e){
 //         cerrarConexionPOOL()
-//         res.status(404).json({status: 403,mensaje:e.message})
+//         res.status(404).json({status: 200,mensaje:e.message})
 //     }
 // })
 
@@ -134,7 +134,7 @@ router.post ( '/insert' , async (req, res ) => {
 //     }
 //     catch(err){
 //         cerrarConexionPOOL()
-//         res.status(403).json({error:err.message})
+//         res.status(200).json({error:err.message})
 //     }
 // })
 
@@ -161,7 +161,7 @@ router.post ( '/insert' , async (req, res ) => {
 //     }
 //     catch(e){
 //         cerrarConexionPOOL()
-//         res.status(403).json({error:err.message})
+//         res.status(200).json({error:err.message})
 //     }
 // })
 

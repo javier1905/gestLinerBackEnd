@@ -11,16 +11,16 @@ router.get('/list' , async ( req , res ) => {
         const result = await myRequest.execute('pa_listaTiposContribullente')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json(result.recordset)
+            res.status(200).json({list:result.recordset,opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje : 'Error en el resultado'})
+            res.status(200).json({mensaje : 'Error en el resultado',opOK:false})
         }
     }
     catch (e) {
         cerrarConexionPOOL()
-        res.status(403).json({mensaje : e.message})
+        res.status(200).json({mensaje : e.message,opOK:false})
     }
 })
 
@@ -38,16 +38,16 @@ router.post ('/insert' , async (req , res) => {
         const result = await myRequest.execute ('pa_insertTipoContribullente')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Tipo de contribullente guardado exitosamente'})
+            res.status(200).json({ mensaje:'Tipo de contribullente guardado exitosamente',opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
+            res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
+        res.status(200).json({mensaje:e.message,opOK:false})
     }
 })
 
@@ -66,16 +66,16 @@ router.put('/update',async(req,res)=>{
         const result = await myRequest.execute ('pa_updateTipoContribullente')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Tipo de contribullente modificado exitosamente'})
+            res.status(200).json({ mensaje:'Tipo de contribullente modificado exitosamente',opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
+            res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
+        res.status(200).json({mensaje:e.message,opOK:false})
     }
 })
 
@@ -92,16 +92,16 @@ router.post('/delete',async(req,res)=>{
         const result = await myRequest.execute ('pa_deleteTipoContribullente')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Tipo de contribullente eliminado exitosamente'})
+            res.status(200).json({ mensaje:'Tipo de contribullente eliminado exitosamente',opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
+            res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
+        res.status(200).json({mensaje:e.message,opOK:false})
     }
 })
 

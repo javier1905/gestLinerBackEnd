@@ -12,16 +12,16 @@ router.get('/list' , async ( req , res ) => {
         const result = await myRequest.execute('pa_listaProductos')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json(result.recordset)
+            res.status(200).json({list:result.recordset,opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje : 'Error en el resultado'})
+            res.status(200).json({mensaje : 'Error en el resultado',opOK:false})
         }
     }
     catch (e) {
         cerrarConexionPOOL()
-        res.status(403).json({mensaje : e.message})
+        res.status(403).json({mensaje : e.message,opOK:false})
     }
 })
 
@@ -37,7 +37,7 @@ router.post ('/insert' , async (req , res) => {
         if(err) {
             myTransaction.rollback()
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:err.message})
+            res.status(200).json({mensaje:err.message,opOK:false})
         }
         try {
             const myRequest = new Request (myTransaction)
@@ -48,7 +48,7 @@ router.post ('/insert' , async (req , res) => {
             if(result.rowsAffected[0] === 0 || !result.recordset[0].idProducto){
                 myTransaction.rollback()
                 cerrarConexionPOOL()
-                res.status(403).json({mensaje:'Producto no insertado'})
+                res.status(200).json({mensaje:'Producto no insertado',opOK:false})
             }
             else{                
                 const idProducto = parseInt(result.recordset[0].idProducto)
@@ -65,12 +65,12 @@ router.post ('/insert' , async (req , res) => {
                         if(errorCallBack){
                             myTransaction.rollback()
                             cerrarConexionPOOL()
-                            res.status(403).json({mensaje:errorCallBack})
+                            res.status(200).json({mensaje:errorCallBack,opOK:false})
                         }
                         else{
                             myTransaction.commit()
                             cerrarConexionPOOL()
-                            res.status(200).json({mensaje:'Producto y detalles de producto guardados exitosamente'})
+                            res.status(200).json({mensaje:'Producto y detalles de producto guardados exitosamente',opOK:true})
                         }
                     }
                 )                
@@ -79,7 +79,7 @@ router.post ('/insert' , async (req , res) => {
         catch(e){
             myTransaction.rollback()
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:e.message})
+            res.status(403).json({mensaje:e.message,opOK:false})
         }                
     })
 })
@@ -100,16 +100,16 @@ router.put('/update',async(req,res)=>{
         const result = await myRequest.execute ('pa_updateProducto')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Producto modificado exitosamente'})
+            res.status(200).json({ mensaje:'Producto modificado exitosamente',opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
+            res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
+        res.status(200).json({mensaje:e.message,opOK:false})
     }
 })
 
@@ -126,16 +126,16 @@ router.post('/delete',async(req,res)=>{
         const result = await myRequest.execute ('pa_deleteProducto')
         if(result) {
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Producto eliminado exitosamente'})
+            res.status(200).json({ mensaje:'Producto eliminado exitosamente',opOK:true})
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado'})
+            res.status(403).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message})
+        res.status(403).json({mensaje:e.message,opOK:false})
     }
 })
 

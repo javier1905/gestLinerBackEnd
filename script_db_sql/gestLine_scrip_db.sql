@@ -335,12 +335,15 @@ go
 create procedure pa_login
 	@usuario varchar(50)
 	as
-	select nombre as nombreUsuario ,
-	apellido as apellidoUsuario ,
-	nombreUsuario as usuario ,
-	pw
-	from usuarios
-	where nombreUsuario = @usuario
+	begin
+		select  id as idUsuario ,
+		nombre as nombreUsuario ,
+		apellido as apellidoUsuario ,
+		nombreUsuario as usuario ,
+		pw
+		from usuarios
+		where nombreUsuario = @usuario
+	end
 go
 create procedure pa_listaCategorias
 as
@@ -818,3 +821,4 @@ create procedure pa_deleteDetalleProductoXidProductoDEF
 as
 delete detalles_producto where idProducto = @idProducto
 go
+select *from usuarios
