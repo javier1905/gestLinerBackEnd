@@ -44,7 +44,7 @@ router.post ('/insert' , async (req , res) => {
             myRequest.input('nombreProducto' , VarChar , nombreProducto )
             myRequest.input('descripcionProducto' , VarChar , descripcionProducto )
             myRequest.input('precioActualProducto' , Real , precioActualProducto )
-            const result = await myRequest.execute ('pa_insertProductoo')
+            const result = await myRequest.execute ('pa_insertProducto')
             if(result.rowsAffected[0] === 0 || !result.recordset[0].idProducto){
                 myTransaction.rollback()
                 cerrarConexionPOOL()
@@ -88,29 +88,60 @@ router.post ('/insert' , async (req , res) => {
 
 router.put('/update',async(req,res)=>{
     const { abrirConexionPOOL , cerrarConexionPOOL } = require('../conexiones/sqlServer')
-    try {
-        const {nombreProducto,descripcionProducto , precioActualProducto ,idProducto} = req.body        
-        const conexion = await abrirConexionPOOL('updateProducto')
-        const mssql = require('mssql')
-        const myRequest = new mssql.Request (conexion)
-        myRequest.input('nombreProducto' , mssql.VarChar , nombreProducto )
-        myRequest.input('descripcionProducto' , mssql.VarChar , descripcionProducto )
-        myRequest.input('precioActualProducto' , mssql.Real , precioActualProducto )
-        myRequest.input('idProducto' , mssql.Int , idProducto )
-        const result = await myRequest.execute ('pa_updateProducto')
-        if(result) {
+    const {nombreProducto,descripcionProducto,precioActualProducto,idProducto,vecDetallesProducto} = req.body        
+    const conexion = await abrirConexionPOOL('updateProducto')
+    const {Request,VarChar,Real,Int,Transaction} = require('mssql')
+    const myTransaction = new Transaction(conexion)
+    myTransaction.begin(async err=>{
+        if(err){
+            myTransaction.rollback()
             cerrarConexionPOOL()
-            res.status(200).json({ mensaje:'Producto modificado exitosamente',opOK:true})
+            res.status(200).json({mensaje:err.message,opOK:false})
         }
-        else{
+        try {
+            const myRequest = new Request (myTransaction)
+            myRequest.input('nombreProducto' , VarChar , nombreProducto )
+            myRequest.input('descripcionProducto' , VarChar , descripcionProducto )
+            myRequest.input('precioActualProducto' , Real , precioActualProducto )
+            myRequest.input('idProducto' , Int , idProducto )
+            const result = await myRequest.execute ('pa_updateProducto')
+            if(result.rowsAffected === 0){
+                myTransaction.rollback()
+                cerrarConexionPOOL()
+                res.status(200).json({mensaje:'ERROR 0 filas modificadas',opOK:false})
+            }
+            else{
+                const myRequestDP = new Request(myTransaction)
+                myRequestDP.input('idProducto',Int,idProducto)
+                myRequestDP.input('idArticulo',Int,0)
+                myRequestDP.input('cantidadDetalleProducto',Real,0)
+                eachSeries(vecDetallesProducto,(DP,callback)=>{
+                    myRequestDP.parameters.idArticulo.value = DP.idArticulo
+                    myRequestDP.parameters.cantidadDetalleProducto.value = DP.cantidadDetalleProducto
+                    myRequestDP.execute('pa_insertDetalleProducto',(E,R)=>{
+                        if(E){callback(E)}else{callback()}
+                    })
+                },errorCallBack=>{
+                    if(errorCallBack){
+                        myTransaction.rollback()
+                        cerrarConexionPOOL()
+                        res.status(200).json({mensaje:errorCallBack.message,opOK:false})
+                    }
+                    else{
+                        myTransaction.commit()
+                        cerrarConexionPOOL()
+                        res.status(200).json({mensaje:'Producto modificado exitosamente',opOK:true})
+                    }
+                })
+            }
+        }
+        catch(e){
+            myTransaction.rollback()
             cerrarConexionPOOL()
             res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
-    }
-    catch(e){
-        cerrarConexionPOOL()
-        res.status(200).json({mensaje:e.message,opOK:false})
-    }
+    })
+
 })
 
 //TODO: DELETE PRODUCTO
@@ -130,12 +161,12 @@ router.post('/delete',async(req,res)=>{
         }
         else{
             cerrarConexionPOOL()
-            res.status(403).json({mensaje:'Error al inesperado',opOK:false})
+            res.status(200).json({mensaje:'Error al inesperado',opOK:false})
         }
     }
     catch(e){
         cerrarConexionPOOL()
-        res.status(403).json({mensaje:e.message,opOK:false})
+        res.status(200).json({mensaje:e.message,opOK:false})
     }
 })
 
