@@ -1,6 +1,5 @@
+
 {
-    "editor.fontFamily": "Fira Code",
-    "editor.fontSize": 15,
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#2f7c47",
         "activityBar.activeBorder": "#422c74",
@@ -17,5 +16,22 @@
         "titleBar.inactiveBackground": "#21573299",
         "titleBar.inactiveForeground": "#e7e7e799"
     },
-    "peacock.color": "#215732"
+    "peacock.color": "#215732",
+    "editor.fontLigatures": true ,
+    "editor.fontSize": 15,
+    "editor.lineHeight": 0,
+    "editor.fontWeight": "400",
+    "editor.fontFamily": "'Victor Mono' , 'Fira Code', 'Courier New', monospace",
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope":"string.quoted.single",
+                "settings": {
+                    "foreground": "#45f88f",
+                    "fontStyle": ""
+                }
+            }
+        ]
+    },
+    "npm-scripts.showStartNotification": false
 }

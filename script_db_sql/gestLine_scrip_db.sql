@@ -528,7 +528,7 @@ create procedure pa_listaArticulos
 as
 select a.id as idArticulo, a.nombre as nombreArticulo , a.descripcion as descripcionArticulo , a.peso as pesoArticulo , a.codProvedor as codigoProvedorArticulo ,
 a.codInterno as codigoInternoAticulo , u.id as idUnidadMedida , u.nombre as nombreUnidadMedida , c.id as idCategoria , c.nombre as nombreCategoria ,
-m.id as idMarca , m.nombre as nombreMatca
+m.id as idMarca , m.nombre as nombreMarca
 from articulos a
 join unidades_medida u on u.id = a.idUnidadMedida
 join categorias c on c.id = a.idCategoria
